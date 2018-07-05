@@ -3,8 +3,11 @@
 // This is done with the browser options. For the config, see package.json
 import Vue from 'vue'
 import App from './App.vue'
+import VuejsDialog from "vuejs-dialog"
 
 new Vue({ // eslint-disable-line no-new
   el: '#app',
   render: (h) => h(App)
 })
+
+Vue.use(VuejsDialog)

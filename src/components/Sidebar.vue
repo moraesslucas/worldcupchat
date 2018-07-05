@@ -5,7 +5,7 @@
       <div class="row heading">
         <div class="col-sm-3 col-xs-3 heading-avatar">
           <div class="heading-avatar-icon">
-            <img src="http://shurl.esy.es/y">
+            <img src="https://i1.wp.com/www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png?fit=256%2C256&quality=100&ssl=1">
           </div>
         </div>
         <div class="col-sm-6 col-xs-6 heading-username">
@@ -20,31 +20,36 @@
       <div class="row sideBar">
 
         <div class="row sideBar-body">
-          <div class="col-sm-3 col-xs-3 sideBar-avatar">
-            <div class="avatar-icon">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsERE__yKbJ86IZGz8AhbogF8M6w7ru-29Kb0DTNtmJuXnxaulgg">
+          <div @click="changeChat({username: 'Broadcast', room: 'Broadcast'})">
+            <div class="col-sm-3 col-xs-3 sideBar-avatar">
+              <div class="avatar-icon">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsERE__yKbJ86IZGz8AhbogF8M6w7ru-29Kb0DTNtmJuXnxaulgg">
+              </div>
             </div>
-          </div>
-          <div class="col-sm-9 col-xs-9 sideBar-main">
-            <div class="row">
-              <div class="col-sm-12 col-xs-12 sideBar-name">
-                <span class="name-meta">Broadcast
-              </span>
+            <div class="col-sm-9 col-xs-9 sideBar-main">
+              <div class="row">
+                <div class="col-sm-12 col-xs-12 sideBar-name">
+                  <span class="name-meta">Broadcast
+                </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="row sideBar-body">
-          <div class="col-sm-3 col-xs-3 sideBar-avatar">
-            <div class="avatar-icon">
-              <img src="https://www.ibahia.com/fileadmin/user_upload/senac__logo.jpg">
+        <div class="row sideBar-body" v-for="chat in openchats">
+          <div @click="changeChat({room: chat.room, username: chat.username})">
+            <div class="col-sm-3 col-xs-3 sideBar-avatar">
+              <div class="avatar-icon">
+                <img src="https://i1.wp.com/www.winhelponline.com/blog/wp-content/uploads/2017/12/user.png?fit=256%2C256&quality=100&ssl=1">
+              </div>
             </div>
-          </div>
-          <div class="col-sm-9 col-xs-9 sideBar-main">
-            <div class="row">
-              <div class="col-sm-12 col-xs-12 sideBar-name">
-                <span class="name-meta">Senac
-              </span>
+            <div class="col-sm-9 col-xs-9 sideBar-main">
+              <div class="row">
+                <div class="col-sm-12 col-xs-12 sideBar-name">
+                  <span class="name-meta">
+                    {{chat.username}}
+                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -60,9 +65,7 @@
 <script>
 export default {
   name: 'sidebar',
-  props: {
-    value: String,
-  },
+  props: ['value', 'openchats'],
   computed: {
     username: {
       get () {
@@ -70,9 +73,20 @@ export default {
       },
       set (value) {
         this.$emit('input', value)
-      },
+      }
     },
+    teste: {
+      get () {
+        console.log(this.openchats)
+        return this.openchats
+      }
+    }
   },
+  methods: {
+    changeChat: function(payload) {
+      this.$emit('change-chat', payload)
+    }
+  }
 }
 </script>
 

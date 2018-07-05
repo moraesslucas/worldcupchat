@@ -10,6 +10,13 @@ span {
   height: 100%;
 }
 
+.dg-content-cont,
+.dg-main-content,
+.dg-content-body,
+.dg-content {
+  height: auto !important;
+}
+
 body {
   background: url("http://shurl.esy.es/y") no-repeat fixed center;
   background-size: cover;

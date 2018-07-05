@@ -3,35 +3,17 @@
     <div class="row app-one">
 
       <div class="col-sm-4 side">
-        <Sidebar v-model="username"/>
+        <Sidebar v-model="username" v-bind:openchats="chats" v-on:change-chat="changeActiveChat"/>
       </div>
 
 
       <!-- New Message Sidebar End -->
 
       <!-- Conversation Start -->
-      <div class="col-xs-12 col-sm-8 conversation">
-        <!-- Heading -->
-        <div class="row heading">
-          <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
-            <div class="heading-avatar-icon">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsERE__yKbJ86IZGz8AhbogF8M6w7ru-29Kb0DTNtmJuXnxaulgg">
-            </div>
-          </div>
-          <div class="col-sm-8 col-xs-7 heading-name">
-            <a class="heading-name-meta">Broadcast
-            </a>
-            <span class="heading-online">Online</span>
-          </div>
-          <div class="col-sm-1 col-xs-1  heading-dot pull-right">
-            <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
-          </div>
-        </div>
         <!-- Heading End -->
 
         <!-- Message Box -->
-        <BroadcastMessenger v-model="username"/>
-      </div>
+        <BroadcastMessenger v-model="username" v-on:new-chat="openNewChat" v-bind:chat="meuchat" v-bind:room="room"/>
       <!-- Conversation End -->
     </div>
     <!-- App One End -->
@@ -42,16 +24,46 @@
 <script>
 import Sidebar from './Sidebar.vue'
 import BroadcastMessenger from './BroadcastMessenger.vue'
+import Teste from './Teste.vue'
 
 export default {
   name: 'hello',
   components: {
     Sidebar,
-    BroadcastMessenger
+    BroadcastMessenger,
+    Teste
   },
   data () {
     return {
-      username: 'Fulaninho'
+      username: 'Fulaninho',
+      chats: [],
+      meuchat: 'Broadcast',
+      room: 'Broadcast'
+    }
+  },
+  methods: {
+    openNewChat: function (payload) {
+      var chat = {}
+      if (payload.sender != this.username) {
+        chat.username = payload.sender
+      } else if (payload.content != this.username) {
+        chat.username = payload.content
+      } else {
+        return
+      }
+
+      chat.room = payload.room
+
+      if (this.chats.some(function(el){ return el.username === chat.username})) {
+        console.log("já existe")
+      } else {
+        this.chats.push(chat)
+      }
+    },
+    changeActiveChat: function (payload) {
+      console.log(payload)
+      this.meuchat = payload.username
+      this.room = payload.room
     }
   }
 }
