@@ -9,7 +9,7 @@
           </div>
         </div>
         <div class="col-sm-6 col-xs-6 heading-username">
-          <input type="text" name="username" class="form-input" v-model="username">
+          <span v-model="username">{{username}}</span>
         </div>
         <div class="col-sm-1 col-xs-1  heading-dot  pull-right">
           <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>

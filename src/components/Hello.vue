@@ -1,6 +1,10 @@
 <template>
   <div class="container app">
-    <div class="row app-one">
+    <div class="form-group" v-if="username == ''">
+      <input type="text" class="form-input" name="text" v-model="text">
+      <button class="btn btn-primary" @click="setaUsuario">Setar usuário</button>
+    </div>
+    <div class="row app-one" v-else>
 
       <div class="col-sm-4 side">
         <Sidebar v-model="username" v-bind:openchats="chats" v-on:change-chat="changeActiveChat"/>
@@ -35,7 +39,7 @@ export default {
   },
   data () {
     return {
-      username: 'Fulaninho',
+      username: '',
       chats: [],
       meuchat: 'Broadcast',
       room: 'Broadcast'
@@ -64,6 +68,9 @@ export default {
       console.log(payload)
       this.meuchat = payload.username
       this.room = payload.room
+    },
+    setaUsuario: function () {
+      this.username = this.text
     }
   }
 }

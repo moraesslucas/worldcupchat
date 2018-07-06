@@ -14,9 +14,9 @@
 
 			<div class="row message-body">
 				<template v-for="message in messages">
-					<template v-if="message.room == current || (message.sender == current && message.room != current)">
+					<template v-if="message.room == current || ((message.sender == current || message.sender == 'Server') && message.type == 'private')">
 						<div :class="message.sender == username ? 'col-sm-12 message-main-sender' : 'col-sm-12 message-main-receiver'">
-							<div :class="message.sender == username ? 'sender' : 'receiver'">
+							<div :class="message.sender == username || message.sender == 'Server' ? 'sender' : 'receiver'">
 								<div class="sender-name">
 									<span v-if="message.type == 'join_event'" style="font-style: italic;">{{message.sender}} {{message.content}}</span>
 									<span v-else v-confirm="{
@@ -28,7 +28,7 @@
 	          				{{message.sender}}
 	          			</span>
 								</div>
-								<div v-if="message.type == 'message'" class="message-text">
+								<div v-if="message.type == 'message' || message.type == 'private'" class="message-text">
 									{{message.content}}
 								</div>
 							</div>
@@ -56,7 +56,8 @@
 		data() {
 			return {
 				messages: [],
-				websocket: new WebSocket('ws://127.0.0.1:8765/')
+				websocket: new WebSocket('ws://127.0.0.1:8765/'),
+        rooms: ['Broadcast']
 			}
 		},
 		props: {
@@ -101,9 +102,13 @@
 				console.log("DATA")
 				var data = JSON.parse(event.data)
 				console.log(data)
-				if (['message', 'join_event'].indexOf(data.type) >= 0) {
+				if (['message', 'join_event', 'private'].indexOf(data.type) >= 0) {
 					messages.push(data)
 				}
+
+        if (data.type == 'exchange_success') {
+          alert(data.content + '\nSuas figurinhas: ' + data.stickers)
+        }
 
 				if (['open_private', 'join_room'].indexOf(data.type) >= 0) {
 					_this.emit(data)
@@ -118,7 +123,18 @@
 		},
 		methods: {
 			sendMessage: function (text) {
-				this.websocket.send(JSON.stringify({sender: this.username, type: 'message', content: text, room: this.current}))
+        if (text.substring(0, 6) == "/trade") {
+          var offer = text.split(" ")
+          this.websocket.send(JSON.stringify({sender: this.username, type: 'exchange', mine: offer[1], his: offer[2], room: this.current}))
+        } else if (text.substring(0, 5) == "/join") {
+          var offer = text.split(" ")
+          this.websocket.send(JSON.stringify({sender: this.username, type: 'join_room', content: offer[1], room: offer[1]}))
+          this.rooms.push(offer[1])
+        } else if (this.rooms.indexOf(this.current) >= 0) {
+				  this.websocket.send(JSON.stringify({sender: this.username, type: 'message', content: text, room: this.current}))
+        } else {
+          this.websocket.send(JSON.stringify({sender: this.username, type: 'private', content: text, room: this.current}))
+        }
 			},
 			chatPrivado: function (sender) {
 				this.websocket.send(JSON.stringify({sender: this.username, type: 'open_private', content: sender}))
